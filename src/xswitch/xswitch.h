@@ -13,11 +13,14 @@
 #include <QRect>
 #include <QRectF>
 
+namespace xwidget{
+namespace xswitch{
+
 struct XSwitchOption{
-    uint16_t slider_diameter = 0;
-    int16_t slider_margin = 0;
-    uint16_t box_width = 0;
-    uint16_t box_height = 0;
+    uint16_t slider_diameter;
+    int16_t slider_margin;
+    uint16_t box_width;
+    uint16_t box_height;
     QBrush slider_brush;
     QBrush disable_slider_brush;
     QBrush turn_off_box_brush;
@@ -49,4 +52,11 @@ private:
     QPropertyAnimation *animation_ = nullptr;
 };
 
+XSwitchOption SimpleSwitchOption();
+XSwitchOption MaterialDesignSmallSwitchOption();
+XSwitchOption MaterialDesignSwitchOption();
+XSwitchOption InsetSwitchOption();
+
+}  // namespace xswitch 
+}  // namespace xwidget
 #endif // WIDGET_H

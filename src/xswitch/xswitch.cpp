@@ -4,6 +4,9 @@
 #include <QMouseEvent>
 #include <QDebug>
 
+namespace xwidget{
+namespace xswitch{
+
 class XSwitch::XSwitchImpl {
 public:
     XSwitchImpl(const XSwitchOption &option)
@@ -27,7 +30,6 @@ public:
     }
 
     XSwitchOption option_;
-    bool is_turn_on_ = false;
     int slider_offset_= 0;
     QSize size_hint_;
     QRect box_rect_;
@@ -42,7 +44,7 @@ XSwitch::XSwitch(const XSwitchOption &option, QWidget *parent)
       pimpl_(new XSwitchImpl(option)),
       animation_(new QPropertyAnimation(this, "slider_offset", this))
 {
-
+    setCheckable(true);
     animation_->setDuration(pimpl_->animation_duration_);
 }
 
@@ -64,7 +66,7 @@ void XSwitch::paintEvent(QPaintEvent */*e*/) {
     QBrush box_brush;
     QBrush slider_brush;
     if (isEnabled()) {
-        box_brush = pimpl_->is_turn_on_ ? pimpl_->option_.turn_on_box_brush : pimpl_->option_.turn_off_box_brush;
+        box_brush = isChecked() ? pimpl_->option_.turn_on_box_brush : pimpl_->option_.turn_off_box_brush;
         slider_brush = pimpl_->option_.slider_brush;
     } else {
         box_brush = pimpl_->option_.disable_box_brush;
@@ -80,11 +82,11 @@ void XSwitch::paintEvent(QPaintEvent */*e*/) {
 
 void XSwitch::mouseReleaseEvent(QMouseEvent *e) {
     if (e->button() & Qt::LeftButton) {
-        pimpl_->is_turn_on_ = !(pimpl_->is_turn_on_);
+        QAbstractButton::mouseReleaseEvent(e);
         animation_->stop();
         animation_->setStartValue(GetOffset());
 
-        if (pimpl_->is_turn_on_) {
+        if (isChecked()) {
             animation_->setEndValue(pimpl_->slide_end_);
         } else {
             animation_->setEndValue(pimpl_->slide_start_);
@@ -93,7 +95,6 @@ void XSwitch::mouseReleaseEvent(QMouseEvent *e) {
         animation_->start();
     }
 
-    QAbstractButton::mouseReleaseEvent(e);
 }
 
 void XSwitch::enterEvent(QEvent *e) {
@@ -104,3 +105,54 @@ void XSwitch::enterEvent(QEvent *e) {
 QSize XSwitch::sizeHint() const {
     return pimpl_->SizeHint();
 }
+
+XSwitchOption SimpleSwitchOption() {
+    return XSwitchOption{20,
+                        0,
+                        40,
+                        20,
+                        QBrush(QColor(32, 147, 238, 255)),
+                        QBrush(QColor(100, 100, 100, 255)),
+                        QBrush(QColor(221, 221, 221, 255)),
+                        QBrush(QColor(32, 147, 238, 100)),
+                        QBrush(QColor(200, 200, 200, 255))};
+}
+
+XSwitchOption MaterialDesignSmallSwitchOption() {
+    return XSwitchOption{20,
+                        0,
+                        40,
+                        20,
+                        QBrush(QColor("#000000")),
+                        QBrush(QColor("#0000ff")),
+                        QBrush(QColor(0, 255, 255, 50)),
+                        QBrush(QColor("#ff00ff")),
+                        QBrush(QColor("#ffff00"))};
+}
+
+XSwitchOption MaterialDesignSwitchOption() {
+    return XSwitchOption{20,
+                        0,
+                        40,
+                        20,
+                        QBrush(QColor("#000000")),
+                        QBrush(QColor("#0000ff")),
+                        QBrush(QColor(0, 255, 255, 50)),
+                        QBrush(QColor("#ff00ff")),
+                        QBrush(QColor("#ffff00"))};
+}
+
+XSwitchOption InsetSwitchOption() {
+    return XSwitchOption{20,
+                        0,
+                        40,
+                        20,
+                        QBrush(QColor("#000000")),
+                        QBrush(QColor("#0000ff")),
+                        QBrush(QColor(0, 255, 255, 50)),
+                        QBrush(QColor("#ff00ff")),
+                        QBrush(QColor("#ffff00"))};
+}
+
+} //namespace xswitch
+} //namespace xwidget
