@@ -11,6 +11,7 @@ void XSwitchRun() {
     using xwidget::xswitch::XSwitch;
 
     XSwitch xswitch(xwidget::xswitch::SimpleSwitchOption());
+    xswitch.setChecked(true);
     QObject::connect(&xswitch, &XSwitch::clicked, &widget, [](bool status){
                      qDebug()<<"Clicked " << status;
                      });
