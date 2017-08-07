@@ -46,7 +46,7 @@ XSwitch::XSwitch(const XSwitchOption &option, QWidget *parent)
 {
     setCheckable(true);
     animation_->setDuration(pimpl_->animation_duration_);
-    connect(this, &XSwitch::toggled, this, [=](bool ){
+    connect(this, &XSwitch::toggled, this, [=](){
             Animation();
             });
 }
@@ -62,7 +62,7 @@ void XSwitch::SetOffset(int offset) {
     update();
 }
 
-void XSwitch::paintEvent(QPaintEvent */*e*/) {
+void XSwitch::paintEvent(QPaintEvent * /*e*/) {
     QPainter painter(this);
     painter.setPen(Qt::NoPen);
     painter.setRenderHint(QPainter::Antialiasing, true);
