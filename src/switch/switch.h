@@ -13,10 +13,7 @@
 #include <QRect>
 #include <QRectF>
 
-namespace xwidget{
-namespace xswitch{
-
-struct XSwitchOption{
+struct SwitchOption{
     uint16_t slider_diameter;
     int16_t slider_margin;
     uint16_t box_width;
@@ -28,13 +25,13 @@ struct XSwitchOption{
     QBrush disable_box_brush;
 };
 
-class XSwitch final : public QAbstractButton {
+class Switch final : public QAbstractButton {
     Q_OBJECT
     Q_PROPERTY(int slider_offset READ GetOffset WRITE SetOffset)
 
 public:
-    XSwitch(const XSwitchOption &option, QWidget *parent = 0);
-    ~XSwitch();
+    Switch(const SwitchOption &option, QWidget *parent = 0);
+    ~Switch();
 
     QSize sizeHint() const override;
 
@@ -44,8 +41,8 @@ protected:
     void enterEvent(QEvent *) override;
 
 private:
-    class XSwitchImpl;
-    std::unique_ptr<XSwitchImpl> pimpl_;
+    class SwitchImpl;
+    std::unique_ptr<SwitchImpl> pimpl_;
 
     void SetOffset(int offset);
     int GetOffset() const;
@@ -53,11 +50,9 @@ private:
     QPropertyAnimation *animation_ = nullptr;
 };
 
-XSwitchOption SimpleSwitchOption();
-XSwitchOption MaterialDesignSmallSwitchOption();
-XSwitchOption MaterialDesignSwitchOption();
-XSwitchOption InsetSwitchOption();
+SwitchOption SimpleSwitchOption();
+SwitchOption MaterialDesignSmallSwitchOption();
+SwitchOption MaterialDesignSwitchOption();
+SwitchOption InsetSwitchOption();
 
-}  // namespace xswitch 
-}  // namespace xwidget
 #endif // WIDGET_H

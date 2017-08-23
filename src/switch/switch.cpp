@@ -1,15 +1,12 @@
-#include "xswitch.h"
+#include "switch.h"
 
 #include <QPainter>
 #include <QMouseEvent>
 #include <QDebug>
 
-namespace xwidget{
-namespace xswitch{
-
-class XSwitch::XSwitchImpl {
+class Switch::SwitchImpl {
 public:
-    XSwitchImpl(const XSwitchOption &option)
+    SwitchImpl(const SwitchOption &option)
         : option_(option) {
 
         size_hint_ = SizeHint();
@@ -29,7 +26,7 @@ public:
         return QSize(w, h);
     }
 
-    XSwitchOption option_;
+    SwitchOption option_;
     int slider_offset_= 0;
     QSize size_hint_;
     QRect box_rect_;
@@ -39,30 +36,30 @@ public:
     int slide_end_ = 0;
 };
 
-XSwitch::XSwitch(const XSwitchOption &option, QWidget *parent)
+Switch::Switch(const SwitchOption &option, QWidget *parent)
     : QAbstractButton(parent),
-      pimpl_(new XSwitchImpl(option)),
+      pimpl_(new SwitchImpl(option)),
       animation_(new QPropertyAnimation(this, "slider_offset", this))
 {
     setCheckable(true);
     animation_->setDuration(pimpl_->animation_duration_);
-    connect(this, &XSwitch::toggled, this, [=](){
+    connect(this, &Switch::toggled, this, [=](){
             Animation();
             });
 }
 
-XSwitch::~XSwitch() = default;
+Switch::~Switch() = default;
 
-int XSwitch::GetOffset() const {
+int Switch::GetOffset() const {
     return pimpl_->slider_offset_;
 }
 
-void XSwitch::SetOffset(int offset) {
+void Switch::SetOffset(int offset) {
     pimpl_->slider_offset_ = offset;
     update();
 }
 
-void XSwitch::paintEvent(QPaintEvent * /*e*/) {
+void Switch::paintEvent(QPaintEvent * /*e*/) {
     QPainter painter(this);
     painter.setPen(Qt::NoPen);
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -78,7 +75,8 @@ void XSwitch::paintEvent(QPaintEvent * /*e*/) {
             pimpl_->slide_end_ : pimpl_->slide_start_;
     }
     painter.setBrush(box_brush);
-    painter.drawRoundedRect(pimpl_->box_rect_, pimpl_->option_.box_height/2, pimpl_->option_.box_height/2);
+    painter.drawRoundedRect(pimpl_->box_rect_, pimpl_->option_.box_height/2,
+                            pimpl_->option_.box_height/2);
     painter.setBrush(slider_brush);
     painter.drawEllipse(QRectF(pimpl_->slider_rect_.x() + pimpl_->slider_offset_,
                                pimpl_->slider_rect_.y(),
@@ -86,14 +84,14 @@ void XSwitch::paintEvent(QPaintEvent * /*e*/) {
                                pimpl_->slider_rect_.height()));
 }
 
-void XSwitch::mouseReleaseEvent(QMouseEvent *e) {
+void Switch::mouseReleaseEvent(QMouseEvent *e) {
     if (e->button() & Qt::LeftButton) {
         QAbstractButton::mouseReleaseEvent(e);
     }
 
 }
 
-void XSwitch::Animation() {
+void Switch::Animation() {
         animation_->stop();
         animation_->setStartValue(GetOffset());
 
@@ -106,17 +104,17 @@ void XSwitch::Animation() {
         animation_->start();
 }
 
-void XSwitch::enterEvent(QEvent *e) {
+void Switch::enterEvent(QEvent *e) {
     setCursor(Qt::PointingHandCursor);
     QAbstractButton::enterEvent(e);
 }
 
-QSize XSwitch::sizeHint() const {
+QSize Switch::sizeHint() const {
     return pimpl_->SizeHint();
 }
 
-XSwitchOption SimpleSwitchOption() {
-    return XSwitchOption{20,
+SwitchOption SimpleSwitchOption() {
+    return SwitchOption{20,
                         0,
                         40,
                         20,
@@ -127,8 +125,8 @@ XSwitchOption SimpleSwitchOption() {
                         QBrush(QColor(200, 200, 200, 255))};
 }
 
-XSwitchOption MaterialDesignSmallSwitchOption() {
-    return XSwitchOption{20,
+SwitchOption MaterialDesignSmallSwitchOption() {
+    return SwitchOption{20,
                         0,
                         40,
                         20,
@@ -139,8 +137,8 @@ XSwitchOption MaterialDesignSmallSwitchOption() {
                         QBrush(QColor("#ffff00"))};
 }
 
-XSwitchOption MaterialDesignSwitchOption() {
-    return XSwitchOption{20,
+SwitchOption MaterialDesignSwitchOption() {
+    return SwitchOption{20,
                         0,
                         40,
                         20,
@@ -151,8 +149,8 @@ XSwitchOption MaterialDesignSwitchOption() {
                         QBrush(QColor("#ffff00"))};
 }
 
-XSwitchOption InsetSwitchOption() {
-    return XSwitchOption{20,
+SwitchOption InsetSwitchOption() {
+    return SwitchOption{20,
                         0,
                         40,
                         20,
@@ -162,6 +160,3 @@ XSwitchOption InsetSwitchOption() {
                         QBrush(QColor("#ff00ff")),
                         QBrush(QColor("#ffff00"))};
 }
-
-} //namespace xswitch
-} //namespace xwidget
