@@ -1,22 +1,26 @@
+/* Copyright (©) 2017 zgzf1001@gmail.com */
 #include "switch.h"
 
-#include <QPainter>
-#include <QMouseEvent>
 #include <QDebug>
+#include <QMouseEvent>
+#include <QPainter>
+
+#include <algorithm>
 
 class Switch::SwitchImpl {
 public:
-    SwitchImpl(const SwitchOption &option)
-        : option_(option) {
-
+    explicit SwitchImpl(const SwitchOption &option) : option_(option) {
         size_hint_ = SizeHint();
-        box_rect_ = QRect(option_.slider_margin < 0 ? -option_.slider_margin : 0,
-                                          (size_hint_.height() - option_.box_height) / 2,
-                                          option_.box_width, option_.box_height);
-        slider_rect_ = QRectF(option_.slider_margin > 0 ? option_.slider_margin : 0,
-                                       (size_hint_.height() - option_.slider_diameter) / 2,
-                                       option_.slider_diameter, option_.slider_diameter);
-        slide_end_ = option_.box_width - option_.slider_margin * 2 - option_.slider_diameter;
+        box_rect_ =
+                QRect(option_.slider_margin < 0 ? -option_.slider_margin : 0,
+                      (size_hint_.height() - option_.box_height) / 2,
+                      option_.box_width, option_.box_height);
+        slider_rect_ =
+                QRectF(option_.slider_margin > 0 ? option_.slider_margin : 0,
+                       (size_hint_.height() - option_.slider_diameter) / 2,
+                       option_.slider_diameter, option_.slider_diameter);
+        slide_end_ = option_.box_width - option_.slider_margin * 2 -
+                     option_.slider_diameter;
     }
 
     QSize SizeHint() {
@@ -27,7 +31,7 @@ public:
     }
 
     SwitchOption option_;
-    int slider_offset_= 0;
+    int slider_offset_ = 0;
     QSize size_hint_;
     QRect box_rect_;
     QRectF slider_rect_;
@@ -37,22 +41,17 @@ public:
 };
 
 Switch::Switch(const SwitchOption &option, QWidget *parent)
-    : QAbstractButton(parent),
-      pimpl_(new SwitchImpl(option)),
-      animation_(new QPropertyAnimation(this, "slider_offset", this))
-{
+        : QAbstractButton(parent),
+          pimpl_(new SwitchImpl(option)),
+          animation_(new QPropertyAnimation(this, "slider_offset", this)) {
     setCheckable(true);
     animation_->setDuration(pimpl_->animation_duration_);
-    connect(this, &Switch::toggled, this, [=](){
-            Animation();
-            });
+    connect(this, &Switch::toggled, this, [=]() { Animation(); });
 }
 
 Switch::~Switch() = default;
 
-int Switch::GetOffset() const {
-    return pimpl_->slider_offset_;
-}
+int Switch::GetOffset() const { return pimpl_->slider_offset_; }
 
 void Switch::SetOffset(int offset) {
     pimpl_->slider_offset_ = offset;
@@ -66,42 +65,40 @@ void Switch::paintEvent(QPaintEvent * /*e*/) {
     QBrush box_brush;
     QBrush slider_brush;
     if (isEnabled()) {
-        box_brush = isChecked() ? pimpl_->option_.turn_on_box_brush : pimpl_->option_.turn_off_box_brush;
+        box_brush = isChecked() ? pimpl_->option_.turn_on_box_brush
+                                : pimpl_->option_.turn_off_box_brush;
         slider_brush = pimpl_->option_.slider_brush;
     } else {
         box_brush = pimpl_->option_.disable_box_brush;
         slider_brush = pimpl_->option_.disable_slider_brush;
-        pimpl_->slider_offset_ = isChecked() ?
-            pimpl_->slide_end_ : pimpl_->slide_start_;
+        pimpl_->slider_offset_ =
+                isChecked() ? pimpl_->slide_end_ : pimpl_->slide_start_;
     }
     painter.setBrush(box_brush);
-    painter.drawRoundedRect(pimpl_->box_rect_, pimpl_->option_.box_height/2,
-                            pimpl_->option_.box_height/2);
+    painter.drawRoundedRect(pimpl_->box_rect_, pimpl_->option_.box_height / 2,
+                            pimpl_->option_.box_height / 2);
     painter.setBrush(slider_brush);
-    painter.drawEllipse(QRectF(pimpl_->slider_rect_.x() + pimpl_->slider_offset_,
-                               pimpl_->slider_rect_.y(),
-                               pimpl_->slider_rect_.width(),
-                               pimpl_->slider_rect_.height()));
+    painter.drawEllipse(
+            QRectF(pimpl_->slider_rect_.x() + pimpl_->slider_offset_,
+                   pimpl_->slider_rect_.y(), pimpl_->slider_rect_.width(),
+                   pimpl_->slider_rect_.height()));
 }
 
 void Switch::mouseReleaseEvent(QMouseEvent *e) {
-    if (e->button() & Qt::LeftButton) {
-        QAbstractButton::mouseReleaseEvent(e);
-    }
-
+    if (e->button() & Qt::LeftButton) { QAbstractButton::mouseReleaseEvent(e); }
 }
 
 void Switch::Animation() {
-        animation_->stop();
-        animation_->setStartValue(GetOffset());
+    animation_->stop();
+    animation_->setStartValue(GetOffset());
 
-        if (isChecked()) {
-            animation_->setEndValue(pimpl_->slide_end_);
-        } else {
-            animation_->setEndValue(pimpl_->slide_start_);
-        }
+    if (isChecked()) {
+        animation_->setEndValue(pimpl_->slide_end_);
+    } else {
+        animation_->setEndValue(pimpl_->slide_start_);
+    }
 
-        animation_->start();
+    animation_->start();
 }
 
 void Switch::enterEvent(QEvent *e) {
@@ -109,54 +106,4 @@ void Switch::enterEvent(QEvent *e) {
     QAbstractButton::enterEvent(e);
 }
 
-QSize Switch::sizeHint() const {
-    return pimpl_->SizeHint();
-}
-
-SwitchOption SimpleSwitchOption() {
-    return SwitchOption{20,
-                        0,
-                        40,
-                        20,
-                        QBrush(QColor(32, 147, 238, 255)),
-                        QBrush(QColor(100, 100, 100, 255)),
-                        QBrush(QColor(221, 221, 221, 255)),
-                        QBrush(QColor(32, 147, 238, 100)),
-                        QBrush(QColor(200, 200, 200, 255))};
-}
-
-SwitchOption MaterialDesignSmallSwitchOption() {
-    return SwitchOption{20,
-                        0,
-                        40,
-                        20,
-                        QBrush(QColor("#000000")),
-                        QBrush(QColor("#0000ff")),
-                        QBrush(QColor(0, 255, 255, 50)),
-                        QBrush(QColor("#ff00ff")),
-                        QBrush(QColor("#ffff00"))};
-}
-
-SwitchOption MaterialDesignSwitchOption() {
-    return SwitchOption{20,
-                        0,
-                        40,
-                        20,
-                        QBrush(QColor("#000000")),
-                        QBrush(QColor("#0000ff")),
-                        QBrush(QColor(0, 255, 255, 50)),
-                        QBrush(QColor("#ff00ff")),
-                        QBrush(QColor("#ffff00"))};
-}
-
-SwitchOption InsetSwitchOption() {
-    return SwitchOption{20,
-                        0,
-                        40,
-                        20,
-                        QBrush(QColor("#000000")),
-                        QBrush(QColor("#0000ff")),
-                        QBrush(QColor(0, 255, 255, 50)),
-                        QBrush(QColor("#ff00ff")),
-                        QBrush(QColor("#ffff00"))};
-}
+QSize Switch::sizeHint() const { return pimpl_->SizeHint(); }

@@ -1,28 +1,28 @@
-#ifndef WIDGET_H
-#define WIDGET_H
+/* Copyright (©) 2017 zgzf1001@gmail.com */
+#ifndef SRC_SWITCH_SWITCH_H_
+#define SRC_SWITCH_SWITCH_H_
+
+#include <QAbstractButton>
+#include <QHBoxLayout>
+#include <QPropertyAnimation>
+#include <QRect>
+#include <QRectF>
+#include <QWidget>
 
 #include <cstdint>
-
 #include <memory>
 #include <string>
 
-#include <QWidget>
-#include <QAbstractButton>
-#include <QPropertyAnimation>
-#include <QHBoxLayout>
-#include <QRect>
-#include <QRectF>
-
-struct SwitchOption{
-    uint16_t slider_diameter;
-    int16_t slider_margin;
-    uint16_t box_width;
-    uint16_t box_height;
-    QBrush slider_brush;
-    QBrush disable_slider_brush;
-    QBrush turn_off_box_brush;
-    QBrush turn_on_box_brush;
-    QBrush disable_box_brush;
+struct SwitchOption {
+    uint16_t slider_diameter;     // 滑块直径
+    int16_t slider_margin;        // 滑块边缘与滑槽边缘的间距
+    uint16_t box_width;           // 滑槽宽度
+    uint16_t box_height;          // 滑槽高度
+    QBrush slider_brush;          // 正常情况下滑块画刷
+    QBrush disable_slider_brush;  // 禁用时滑块画刷
+    QBrush turn_off_box_brush;    // 开关关闭时滑槽画刷
+    QBrush turn_on_box_brush;     // 开关开启时滑槽画刷
+    QBrush disable_box_brush;     // 禁用时滑槽画刷
 };
 
 class Switch final : public QAbstractButton {
@@ -30,7 +30,7 @@ class Switch final : public QAbstractButton {
     Q_PROPERTY(int slider_offset READ GetOffset WRITE SetOffset)
 
 public:
-    Switch(const SwitchOption &option, QWidget *parent = 0);
+    explicit Switch(const SwitchOption &option, QWidget *parent = 0);
     ~Switch();
 
     QSize sizeHint() const override;
@@ -50,9 +50,4 @@ private:
     QPropertyAnimation *animation_ = nullptr;
 };
 
-SwitchOption SimpleSwitchOption();
-SwitchOption MaterialDesignSmallSwitchOption();
-SwitchOption MaterialDesignSwitchOption();
-SwitchOption InsetSwitchOption();
-
-#endif // WIDGET_H
+#endif  // SRC_SWITCH_SWITCH_H_
