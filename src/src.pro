@@ -1,4 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    switch
+    widgets/switch
+
+SUBDIRS += \
+    utils/scale
