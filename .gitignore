@@ -38,3 +38,5 @@ build/
 # QtCtreator CMake
 CMakeLists.txt.user*
 
+# vim
+*.swp
