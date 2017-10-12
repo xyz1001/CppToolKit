@@ -20,6 +20,7 @@ public:
 public:
     bool Get();
     bool Post();
+    void Reset();
 
 private:
     std::ostream &out_stream_;

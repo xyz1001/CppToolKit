@@ -52,10 +52,44 @@ bool Curlpp::Get() {
 
     CURLcode res = curl_easy_perform(curl_);  // 执行
     out_stream_ << buffer_;
-    return res == 0;
+
+    return res == CURLE_OK;
 }
 
 bool Curlpp::Post() {
     if (curl_ == nullptr) { return false; }
-    return false;
+
+    if (headers_ != nullptr) {
+        curl_easy_setopt(curl_, CURLOPT_HTTPHEADER, headers_);
+    }
+
+    std::string post_field;
+
+    for (auto &i : params_) { post_field += i.first + '=' + i.second + '&'; }
+    if (!post_field.empty()) {
+        post_field.pop_back();
+        curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, post_field.c_str());
+    }
+
+    curl_easy_setopt(curl_, CURLOPT_URL, url_.c_str());
+
+    CURLcode res = curl_easy_perform(curl_);  // 执行
+    out_stream_ << buffer_;
+
+    return res == CURLE_OK;
+}
+
+void Curlpp::Reset() {
+    out_stream_.clear();
+    url_.clear();
+    params_.clear();
+    buffer_.clear();
+
+    curl_easy_cleanup(curl_);
+    curl_slist_free_all(headers_);
+    headers_ = nullptr;
+
+    curl_ = curl_easy_init();
+    curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, WriteCallback);
+    curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &buffer_);
 }
