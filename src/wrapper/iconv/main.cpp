@@ -5,7 +5,7 @@
 #include <iterator>
 #include <sstream>
 
-#include "iconv_cpp.h"
+#include "iconvpp.h"
 
 template <typename T, typename U>
 std::string ToHex(const U &s) {
@@ -28,9 +28,9 @@ int main() {
 
     std::cout << "raw string: " << ToHex<uint8_t>(raw_str) << std::endl
               << std::endl;
-    Iconv converter("gbk", "utf-8");
-    Iconv::ErrorCode ec = converter.convert(raw_str, utf8_str);
-    if (ec != Iconv::kOk) { return -1; }
+    Iconvpp converter("gbk", "utf-8");
+    Iconvpp::ErrorCode ec = converter.convert(raw_str, utf8_str);
+    if (ec != Iconvpp::kOk) { return -1; }
     std::cout << "utf-8 string: " << utf8_str << std::endl;
 
     return 0;
