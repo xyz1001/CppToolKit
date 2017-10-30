@@ -1,5 +1,7 @@
-#ifndef SRC_WRAPPER_CURL_SRC_CURLPP_H_
-#define SRC_WRAPPER_CURL_SRC_CURLPP_H_
+/* Copyright (©) 2017 zgzf1001@gmail.com */
+
+#ifndef SRC_WRAPPERS_CURLPP_CURLPP_H_
+#define SRC_WRAPPERS_CURLPP_CURLPP_H_
 
 #include <curl/curl.h>
 
@@ -32,4 +34,4 @@ private:
     curl_slist *headers_ = nullptr;
 };
 
-#endif  // SRC_WRAPPER_CURL_SRC_CURLPP_H_
+#endif  // SRC_WRAPPERS_CURLPP_CURLPP_H_
