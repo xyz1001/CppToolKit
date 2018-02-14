@@ -77,7 +77,7 @@ std::string GetHexView(Args &&... args) {
 
     hex << std::hex << std::uppercase;
     std::string hex_str = Convert(std::forward<Args>(args)..., hex);
-    hex_str.pop_back();
+    if (!hex_str.empty()) { hex_str.pop_back(); }
     return hex_str;
 }
 
