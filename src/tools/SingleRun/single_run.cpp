@@ -1,5 +1,5 @@
-/* Copyright (©) 2018 CVTE All rights reserved.
- * Author: 张帆3427 <zhangfan3427@cvte.com>
+/* Copyright (©) 2018 xyz1001 All rights reserved.
+ * Author: xyz1001 <zgzf1001@gmail.com>
  *
  * -*- coding: uft-8 -*-
  */
